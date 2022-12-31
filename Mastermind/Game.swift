@@ -20,11 +20,18 @@ struct Game {
         self.solution = Combination.randomized(allowingDuplicates: self.allowDuplicateColors)
     }
     
-    func score(guess: Combination) throws -> CombinationScore {
+    /// Submits a guess to the game history.
+    /// Scores the given guess, increments the guess count, and updates the game status.
+    func submit(guess: Combination) throws -> (CombinationScore, Status) {
         // Throw if you're out of guesses
         // Increment guesses
         // Update game status
-        // Return the score
+        // Return the score and status
+        fatalError("Not implemented")
+    }
+    
+    /// Returns a score for the given guess and solution.
+    static func score(guess: Combination, forSolution solution: Combination) -> CombinationScore {
         fatalError("Not implemented")
     }
 }

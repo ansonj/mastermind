@@ -45,7 +45,7 @@ extension Combination {
     }
 }
 
-struct CombinationScore {
+struct CombinationScore: Equatable {
     /// Correct color, correct position
     let blackScorePegs: Int
     /// Correct color, incorrect position
