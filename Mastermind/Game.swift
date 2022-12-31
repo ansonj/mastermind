@@ -17,7 +17,7 @@ struct Game {
     
     init(allowDuplicateColors: Bool) {
         self.allowDuplicateColors = allowDuplicateColors
-        self.solution = Combination.random
+        self.solution = Combination.randomized(allowingDuplicates: self.allowDuplicateColors)
     }
     
     func score(guess: Combination) throws -> CombinationScore {
