@@ -21,3 +21,8 @@ struct CombinationScore {
     /// Correct color, incorrect position
     let whiteScorePegs: Int
 }
+
+struct Guess {
+    let combination: Combination
+    let score: CombinationScore
+}
