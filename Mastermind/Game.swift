@@ -13,7 +13,7 @@ struct Game {
     let allowDuplicateColors: Bool
     let solution: Combination
     private(set) var status = Status.inProgress
-    private(set) var guesses = 0
+    private(set) var guesses = [Guess]()
     
     init(allowDuplicateColors: Bool) {
         self.allowDuplicateColors = allowDuplicateColors
