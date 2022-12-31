@@ -1,11 +1,6 @@
-//
-//  main.swift
-//  Mastermind
-//
-//  Created by Anson Jablinski on 12/30/22.
-//
+let allowDuplicates = false
+let game = Game(allowDuplicateColors: allowDuplicates)
+let strategy = AnsonsStrategy(allowDuplicateColors: allowDuplicates)
 
-import Foundation
-
-print("Hello, World!")
-
+Runner.run(game: game,
+           withStrategy: strategy)
