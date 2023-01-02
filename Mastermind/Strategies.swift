@@ -66,7 +66,7 @@ struct AnsonsStrategy: Strategy {
             
             var nextGuessBuilder: [PegColor?] = [nil, nil, nil, nil]
             for probability in allProbabilities {
-                if nextGuessBuilder[probability.position] == nil {
+                if nextGuessBuilder[probability.position] == nil && (allowDuplicateColors || !nextGuessBuilder.contains(probability.color)) {
                     nextGuessBuilder[probability.position] = probability.color
                 }
                 if !nextGuessBuilder.contains(nil) {
