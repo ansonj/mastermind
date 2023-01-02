@@ -10,7 +10,7 @@ struct Runner {
             let nextGuess = strategy.nextGuess(forHistory: game.guesses)
             do {
                 let guessScore = try game.submit(guess: nextGuess)
-                print("Guess \(game.guesses.count): \(guessScore)")
+                print("Guess \(game.guesses.count): \(nextGuess) --> \(guessScore)")
             } catch {
                 fatalError(error.localizedDescription)
             }

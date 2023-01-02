@@ -51,6 +51,11 @@ struct CombinationScore: Equatable {
     /// Correct color, incorrect position
     let whiteScorePegs: Int
 }
+extension CombinationScore: CustomStringConvertible {
+    var description: String {
+        "(b: \(blackScorePegs), w: \(whiteScorePegs))"
+    }
+}
 
 struct Guess {
     let combination: Combination
