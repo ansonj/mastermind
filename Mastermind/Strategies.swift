@@ -47,6 +47,9 @@ struct AnsonsStrategy: Strategy {
             }
         }
         assert(possibleSolutions.count > 0, "We don't have any possible solutions for this game.")
+        for combination in possibleSolutions {
+            assert(!history.map(\.combination).contains(combination), "Assuming that we haven't found the solution yet, all previous guesses should be disqualified as possible solutions.")
+        }
         
         // Build a combination with the most likely pegs in each position
         let nextGuess: Combination
