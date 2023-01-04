@@ -11,24 +11,24 @@ struct AnsonsStrategy: Strategy {
     }
     
     func nextGuess(forHistory history: [Guess]) -> Combination {
-        var possibleCombinations: [Combination]
+        var possibleSolutions: [Combination]
         if allowDuplicateColors {
-            possibleCombinations = AllCombinations.withDuplicates
+            possibleSolutions = AllCombinations.withDuplicates
         } else {
-            possibleCombinations = AllCombinations.withoutDuplicates
+            possibleSolutions = AllCombinations.withoutDuplicates
         }
         
         // Remove combinations that don't produce the possible score for each guess
         do {
             var possibleCombinationIndex = 0
-            while possibleCombinationIndex < possibleCombinations.count {
-                let candidateCombination = possibleCombinations[possibleCombinationIndex]
+            while possibleCombinationIndex < possibleSolutions.count {
+                let candidateCombination = possibleSolutions[possibleCombinationIndex]
                 var removedThisCandidate = false
                 
                 for guess in history {
                     let candidateScore = Game.score(guess: guess.combination, forSolution: candidateCombination)
                     if candidateScore != guess.score {
-                        possibleCombinations.remove(at: possibleCombinationIndex)
+                        possibleSolutions.remove(at: possibleCombinationIndex)
                         removedThisCandidate = true
                         break
                     }
@@ -39,7 +39,7 @@ struct AnsonsStrategy: Strategy {
                 }
             }
         }
-        assert(possibleCombinations.count > 0, "We don't have any possible solutions for this game.")
+        assert(possibleSolutions.count > 0, "We don't have any possible solutions for this game.")
         
         // Build a combination with the most likely pegs in each position
         let nextGuess: Combination
@@ -50,10 +50,10 @@ struct AnsonsStrategy: Strategy {
                 let probability: Double
             }
             var allProbabilities = [PegProbability]()
-            let totalNumberOfCombinations = Double(possibleCombinations.count)
-            for pegIndex in 0..<possibleCombinations.first!.count {
+            let totalNumberOfCombinations = Double(possibleSolutions.count)
+            for pegIndex in 0..<possibleSolutions.first!.count {
                 for color in PegColor.allCases {
-                    let count = possibleCombinations.filter({ $0[pegIndex] == color }).count
+                    let count = possibleSolutions.filter({ $0[pegIndex] == color }).count
                     let probability = Double(count) / totalNumberOfCombinations
                     allProbabilities.append(PegProbability(color: color,
                                                            position: pegIndex,
