@@ -50,6 +50,8 @@ struct CombinationScore: Equatable {
     let blackScorePegs: Int
     /// Correct color, incorrect position
     let whiteScorePegs: Int
+    
+    static let solutionScore = CombinationScore(blackScorePegs: 4, whiteScorePegs: 0)
 }
 extension CombinationScore: CustomStringConvertible {
     var description: String {

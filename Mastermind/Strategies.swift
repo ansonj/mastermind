@@ -11,6 +11,13 @@ struct AnsonsStrategy: Strategy {
     }
     
     func nextGuess(forHistory history: [Guess]) -> Combination {
+        // If we know the solution already, just submit that.
+        for guess in history {
+            if guess.score == CombinationScore.solutionScore {
+                return guess.combination
+            }
+        }
+        
         var possibleSolutions: [Combination]
         if allowDuplicateColors {
             possibleSolutions = AllCombinations.withDuplicates
