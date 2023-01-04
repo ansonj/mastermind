@@ -6,6 +6,7 @@ struct Runner {
     
     static func run(game: Game, withStrategy strategy: Strategy) -> GameResult {
         print("Playing a game \(game.allowDuplicateColors ? "with" : "without") duplicates.")
+        print("The solution is \(game.solution).")
         while game.status == .inProgress {
             let nextGuess = strategy.nextGuess(forHistory: game.guesses)
             do {
