@@ -12,8 +12,15 @@ let percentFormatter = {
     f.paddingPosition = .beforePrefix
     return f
 }()
+let minutesFormatter = {
+    let f = NumberFormatter()
+    f.numberStyle = .decimal
+    f.maximumFractionDigits = 2
+    return f
+}()
 
 var trialResults = [Runner.GameResult: Int]()
+let startDate = Date()
 for trialIndex in 1...trials {
     let game = Game(allowDuplicateColors: allowDuplicates)
     let strategy = AnsonsStrategy(allowDuplicateColors: allowDuplicates,
@@ -26,7 +33,8 @@ for trialIndex in 1...trials {
     let formattedProgressPercentage = percentFormatter.string(from: (Double(trialIndex) / Double(trials)) as NSNumber)!
     print("Done with trial \(trialIndex) / \(trials) (\(formattedProgressPercentage))")
 }
-print("I just played \(trials) games")
+let formattedTrialDuration = minutesFormatter.string(from: (Date().timeIntervalSince(startDate) / 60.0) as NSNumber)!
+print("I just played \(trials) games in \(formattedTrialDuration) minutes")
 trialResults.keys.sorted(by: { left, right in
     switch (left, right) {
     case (.lost, .lost):
