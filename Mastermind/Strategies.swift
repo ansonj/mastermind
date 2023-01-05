@@ -27,22 +27,22 @@ struct AnsonsStrategy: Strategy {
         
         // Remove combinations that don't produce the possible score for each guess
         do {
-            var possibleCombinationIndex = 0
-            while possibleCombinationIndex < possibleSolutions.count {
-                let candidateCombination = possibleSolutions[possibleCombinationIndex]
+            var possibleSolutionIndex = 0
+            while possibleSolutionIndex < possibleSolutions.count {
+                let candidateCombination = possibleSolutions[possibleSolutionIndex]
                 var removedThisCandidate = false
                 
                 for guess in history {
                     let candidateScore = Game.score(guess: guess.combination, forSolution: candidateCombination)
                     if candidateScore != guess.score {
-                        possibleSolutions.remove(at: possibleCombinationIndex)
+                        possibleSolutions.remove(at: possibleSolutionIndex)
                         removedThisCandidate = true
                         break
                     }
                 }
                 
                 if !removedThisCandidate {
-                    possibleCombinationIndex += 1
+                    possibleSolutionIndex += 1
                 }
             }
         }
