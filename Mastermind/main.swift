@@ -32,9 +32,9 @@ trialResults.keys.sorted(by: { left, right in
     case (.lost, .lost):
         return false
     case (.lost, .won):
-        return true
-    case (.won, .lost):
         return false
+    case (.won, .lost):
+        return true
     case let (.won(leftWon), .won(rightWon)):
         return leftWon < rightWon
     }
