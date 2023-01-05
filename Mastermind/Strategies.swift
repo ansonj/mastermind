@@ -135,7 +135,7 @@ private struct AllCombinations {
         }
         let countOfPegs = PegColor.allCases.count
         if allowingDuplicates {
-            let expectedCount = countOfPegs ^ 4
+            let expectedCount = countOfPegs * countOfPegs * countOfPegs * countOfPegs
             assert(expectedCount == combinations.count, "We didn't build the right number of combinations with duplicates")
         } else {
             let expectedCount = countOfPegs * (countOfPegs - 1) * (countOfPegs - 2) * (countOfPegs - 3)
