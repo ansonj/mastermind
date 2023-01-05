@@ -1,5 +1,5 @@
 struct Runner {
-    enum GameResult {
+    enum GameResult: Hashable {
         case won(guesses: Int)
         case lost
     }
