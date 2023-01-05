@@ -26,7 +26,7 @@ struct AnsonsStrategy: Strategy {
         }
         
         // Remove combinations that don't produce the possible score for each guess
-        do {
+        if history.count > 0 {
             var possibleSolutionIndex = 0
             while possibleSolutionIndex < possibleSolutions.count {
                 let candidateCombination = possibleSolutions[possibleSolutionIndex]
