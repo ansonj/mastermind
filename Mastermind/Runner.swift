@@ -4,14 +4,19 @@ struct Runner {
         case lost
     }
     
-    static func run(game: Game, withStrategy strategy: Strategy) -> GameResult {
-        print("Playing a game \(game.allowDuplicateColors ? "with" : "without") duplicates.")
-        print("The solution is \(game.solution).")
+    static func run(game: Game, withStrategy strategy: Strategy, debug: Bool) -> GameResult {
+        func debugPrint(_ message: String) {
+            if debug {
+                print(message)
+            }
+        }
+        debugPrint("Playing a game \(game.allowDuplicateColors ? "with" : "without") duplicates.")
+        debugPrint("The solution is \(game.solution).")
         while game.status == .inProgress {
             let nextGuess = strategy.nextGuess(forHistory: game.guesses)
             do {
                 let guessScore = try game.submit(guess: nextGuess)
-                print("Guess \(game.guesses.count): \(nextGuess) --> \(guessScore)")
+                debugPrint("Guess \(game.guesses.count): \(nextGuess) --> \(guessScore)")
             } catch {
                 fatalError(error.localizedDescription)
             }
@@ -20,11 +25,11 @@ struct Runner {
         case .inProgress:
             fatalError("How are we still inProgress?")
         case .won:
-            print("Won the game in \(game.guesses.count) guesses!")
+            debugPrint("Won the game in \(game.guesses.count) guesses!")
             return .won(guesses: game.guesses.count)
         case .lost:
             assert(game.guesses.count == Game.maxNumberOfGuesses)
-            print("Lost the game after \(game.guesses.count) guesses...")
+            debugPrint("Lost the game after \(game.guesses.count) guesses...")
             return .lost
         }
     }

@@ -1,13 +1,15 @@
 protocol Strategy {
-    init(allowDuplicateColors: Bool)
+    init(allowDuplicateColors: Bool, debug: Bool)
     func nextGuess(forHistory history: [Guess]) -> Combination
 }
 
 struct AnsonsStrategy: Strategy {
     let allowDuplicateColors: Bool
+    let debug: Bool
     
-    init(allowDuplicateColors: Bool) {
+    init(allowDuplicateColors: Bool, debug: Bool) {
         self.allowDuplicateColors = allowDuplicateColors
+        self.debug = debug
     }
     
     func nextGuess(forHistory history: [Guess]) -> Combination {
@@ -90,6 +92,17 @@ struct AnsonsStrategy: Strategy {
                 }
             }
             mostLikelySolutions = mostLikelyCombinationsBuilder
+        }
+        
+        if debug {
+            print("Gotta be one of these \(possibleSolutions.count)...")
+            possibleSolutions.forEach { c in
+                print("\t\(c)")
+            }
+            print("Our best options are these \(mostLikelySolutions.count)...")
+            mostLikelySolutions.forEach { c in
+                print("\t\(c)")
+            }
         }
         
         // mostLikelySolutions contains only things that we haven't guessed yet.
