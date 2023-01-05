@@ -3,18 +3,7 @@ let allowDuplicates = false
 let debug = false
 let trials = 1_000
 
-var trialResults = [Runner.GameResult: Int]()
-for _ in 0..<trials {
-    let game = Game(allowDuplicateColors: allowDuplicates)
-    let strategy = AnsonsStrategy(allowDuplicateColors: allowDuplicates,
-                                  debug: debug)
-    let result = Runner.run(game: game,
-                            withStrategy: strategy,
-                            debug: false)
-    trialResults[result, default: 0] += 1
-}
-print("I just played \(trials) games")
-let formatter = {
+let percentFormatter = {
     let f = NumberFormatter()
     f.numberStyle = .percent
     f.minimumFractionDigits = 1
@@ -23,6 +12,21 @@ let formatter = {
     f.paddingPosition = .beforePrefix
     return f
 }()
+
+var trialResults = [Runner.GameResult: Int]()
+for trialIndex in 1...trials {
+    let game = Game(allowDuplicateColors: allowDuplicates)
+    let strategy = AnsonsStrategy(allowDuplicateColors: allowDuplicates,
+                                  debug: debug)
+    let result = Runner.run(game: game,
+                            withStrategy: strategy,
+                            debug: false)
+    trialResults[result, default: 0] += 1
+    
+    let formattedProgressPercentage = percentFormatter.string(from: (Double(trialIndex) / Double(trials)) as NSNumber)!
+    print("Done with trial \(trialIndex) / \(trials) (\(formattedProgressPercentage))")
+}
+print("I just played \(trials) games")
 trialResults.keys.sorted(by: { left, right in
     switch (left, right) {
     case (.lost, .lost):
@@ -37,6 +41,6 @@ trialResults.keys.sorted(by: { left, right in
 }).forEach { result in
     let count = trialResults[result]!
     let percentage = Double(count) / Double(trials)
-    let formattedPercentage = formatter.string(from: percentage as NSNumber)!
+    let formattedPercentage = percentFormatter.string(from: percentage as NSNumber)!
     print("\t\(result): \(count)\t\(formattedPercentage)")
 }
