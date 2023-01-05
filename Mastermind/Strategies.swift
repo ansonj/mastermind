@@ -51,44 +51,51 @@ struct AnsonsStrategy: Strategy {
             assert(!history.map(\.combination).contains(combination), "Assuming that we haven't found the solution yet, all previous guesses should be disqualified as possible solutions.")
         }
         
-        // Build a combination with the most likely pegs in each position
-        let nextGuess: Combination
+        // Build all combinations with the most likely pegs in each position
+        let mostLikelySolutions: [Combination]
         do {
-            struct PegProbability {
-                let color: PegColor
-                let position: Int
-                let probability: Double
+            // Again, we rely on the assumption that there are only four pegs in the game to simplify the code.
+            func options(forPegPosition pegPosition: Int) -> [PegColor] {
+                // This code works, but it's nearly impossible to read.
+                // TODO: Rewrite so this function is easier to read.
+                // Make a list of the nth peg from each possible solution.
+                let pegsInThisPositionFromAllSolutions = possibleSolutions.map { $0[pegPosition] }
+                // Build a dictionary:
+                // - Keys are an integer `x` representing the count of solutions in which a particular peg color appears.
+                // - Values are the peg colors that appear in `x` solutions.
+                let countDictionary = Dictionary(grouping: pegsInThisPositionFromAllSolutions, by: { g in
+                    pegsInThisPositionFromAllSolutions.filter({ f in f == g }).count
+                }).mapValues({ Array<PegColor>(Set<PegColor>($0)) })
+                // Take the key with the highest value (the highest count for which some pegs appear),
+                // and return the list of pegs that appear that many times.
+                return countDictionary[countDictionary.keys.max() ?? -1] ?? []
             }
-            var allProbabilities = [PegProbability]()
-            let totalNumberOfCombinations = Double(possibleSolutions.count)
-            for pegIndex in 0..<possibleSolutions.first!.count {
-                for color in PegColor.allCases {
-                    let count = possibleSolutions.filter({ $0[pegIndex] == color }).count
-                    let probability = Double(count) / totalNumberOfCombinations
-                    allProbabilities.append(PegProbability(color: color,
-                                                           position: pegIndex,
-                                                           probability: probability))
+            let firstPegOptions = options(forPegPosition: 0)
+            let secondPegOptions = options(forPegPosition: 1)
+            let thirdPegOptions = options(forPegPosition: 2)
+            let fourthPegOptions = options(forPegPosition: 3)
+            var mostLikelyCombinationsBuilder = [Combination]()
+            for firstPeg in firstPegOptions {
+                for secondPeg in secondPegOptions {
+                    for thirdPeg in thirdPegOptions {
+                        for fourthPeg in fourthPegOptions {
+                            let candidate = [firstPeg, secondPeg, thirdPeg, fourthPeg]
+                            let candidateIsAllowedAsPerDuplicates = allowDuplicateColors || Set<PegColor>(candidate).count == 4
+                            let candidateHasNotBeenGuessedBefore = !history.map(\.combination).contains(candidate)
+                            if candidateIsAllowedAsPerDuplicates && candidateHasNotBeenGuessedBefore {
+                                mostLikelyCombinationsBuilder.append(candidate)
+                            }
+                        }
+                    }
                 }
             }
-            allProbabilities.sort { left, right in
-                left.probability > right.probability
-            }
-            
-            var nextGuessBuilder: [PegColor?] = [nil, nil, nil, nil]
-            for probability in allProbabilities {
-                if nextGuessBuilder[probability.position] == nil && (allowDuplicateColors || !nextGuessBuilder.contains(probability.color)) {
-                    nextGuessBuilder[probability.position] = probability.color
-                }
-                if !nextGuessBuilder.contains(nil) {
-                    break
-                }
-            }
-            assert(!nextGuessBuilder.contains(nil), "We should have filled in all the positions by now")
-            nextGuess = nextGuessBuilder.compactMap({ $0 })
-            assert(nextGuess.count == 4, "We somehow ended up with a guess with the wrong length")
+            mostLikelySolutions = mostLikelyCombinationsBuilder
         }
         
-        return nextGuess
+        // mostLikelySolutions contains only things that we haven't guessed yet.
+        // But somtimes, the the "most likely" solutions will be ONLY things that we have already guessed.
+        // So, if we can't rely on our probability logic to produce a "most likely" solution, let's just pick the first possible solution and return it as our next guess.
+        return mostLikelySolutions.first ?? possibleSolutions.first!
     }
 }
 
@@ -104,6 +111,7 @@ private struct AllCombinations {
                 for thirdPeg in PegColor.allCases {
                     for fourthPeg in PegColor.allCases {
                         let combination = [firstPeg, secondPeg, thirdPeg, fourthPeg]
+                        // TODO: Deduplicate this duplicates check by writing Array.containsDuplicates
                         let combinationIncludesDuplicates = Set<PegColor>(combination).count != 4
                         if allowingDuplicates || !combinationIncludesDuplicates {
                             combinations.append(combination)
