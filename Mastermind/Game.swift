@@ -47,6 +47,7 @@ class Game {
         
         var blackScorePegCount = 0
         var whiteScorePegCount = 0
+        // https://boardgamegeek.com/image/6624739/mastermind
         for index in 0..<guess.count {
             if solution[index] == guess[index] {
                 blackScorePegCount += 1
